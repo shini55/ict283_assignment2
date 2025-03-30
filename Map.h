@@ -1,59 +1,81 @@
 #ifndef MAP_H_INCLUDED
 #define MAP_H_INCLUDED
-
+#include <map>
 using std::map;
 
-template <class K, class V>
+template <class Key, class Value>
 class Map
 {
 
-
-private:
-    std::map<K, V> data;  // Internal storage
-
 public:
-    Map();  // Constructor
-    void add(K key, V value);  // Add key-value pair
-    V find(K key);  // Find value by key
-    void remove(K key);  // Remove key-value pair
-    size_t getHash(K key);  // Hash function
+
+
+    // Constructor
+    Map();
+
+    // Destructor
+    ~Map();
+
+    // Function 1: Add a key-value pair (renamed from insert)
+    void add(const Key& key, const Value& value);
+
+    // Function 2: Check if a key exists
+    bool has(const Key& key) const;
+
+    // Function 3: Get the value associated with a key
+    Value& get(const Key& key);
+    const Value& get(const Key& key) const;
+
+
+
+    // Function 4: Get the number of elements
+    size_t Count() const;
 
 private:
+
+    std::map<Key, Value> data;
 
 };
-template <class K, class V>
-Map<K, V>::Map() {}
+// Constructor
+template <class Key, class Value>
+Map<Key, Value>::Map() {}
 
-// Add key-value pair
-template <class K, class V>
-void Map<K, V>::add(K key, V value)
+// Destructor
+template <class Key, class Value>
+Map<Key, Value>::~Map() {}
+
+// Add a key-value pair (renamed from insert)
+template <class Key, class Value>
+void Map<Key, Value>::add(const Key& key, const Value& value)
 {
     data[key] = value;
 }
 
-// Find value by key (returns default value if not found)
-template <class K, class V>
-V Map<K, V>::find(K key)
+// Check if a key exists (renamed from contains)
+template <class Key, class Value>
+bool Map<Key, Value>::has(const Key& key) const
 {
-    if (data.count(key) > 0)
-    {
-        return data[key];
-    }
-    return V();  // Return default-constructed U if key not found
+    return data.find(key) != data.end();
 }
 
-// Remove a key-value pair
-template <class K, class V>
-void Map<K, V>::remove(K key)
+// Get the value associated with a key
+template <class Key, class Value>
+Value& Map<Key, Value>::get(const Key& key)
 {
-    data.erase(key);
+    return data.at(key);
 }
 
-// Hash function to generate an index (for BST distribution)
-template <class K, class V>
-size_t Map<K, V>::getHash(K key)
+// Get the value associated with a key (const version)
+template <class Key, class Value>
+const Value& Map<Key, Value>::get(const Key& key) const
 {
-    return std::hash<K>()(key);
+    return data.at(key);
+}
+// Get the number of elements
+template <class Key, class Value>
+size_t Map<Key, Value>::Count() const
+{
+    return data.size();
 }
 
 #endif // MAP_H_INCLUDED
