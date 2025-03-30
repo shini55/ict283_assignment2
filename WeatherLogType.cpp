@@ -23,19 +23,23 @@ WeatherLogType::~WeatherLogType()
 
 }
 // Static helper functions for traversals
-void WeatherLogType::averageVisit(float& value) {
+void WeatherLogType::averageVisit(float& value)
+{
     staticTotalValue += value;
     staticTotalNumOfData++;
 }
 
-void WeatherLogType::stdDevVisit(float& value) {
+void WeatherLogType::stdDevVisit(float& value)
+{
     float diff = value - staticAvg;
     staticSumSquaredDiff += diff * diff;
     staticTotalNumOfData++;
 }
 
-void WeatherLogType::solarVisit(float& value) {
-    if (value >= 100.0f) {
+void WeatherLogType::solarVisit(float& value)
+{
+    if (value >= 100.0f)
+    {
         staticTotalSolarRadiationkWh += (value * (1.0f / 6.0f)) / 1000.0f;
     }
 }
@@ -192,11 +196,16 @@ int WeatherLogType::LoadRecords(const std::string &filename)
             myWeatherRecord.SetDate(Date(day, month, year));
             myWeatherRecord.SetTime(Time(hour, minute, 0));
 
-            // Insert record into weatherLogs
-            weatherLogs[year][month].Insert(myWeatherRecord.GetSpeed());
-            weatherLogs[year][month].Insert(myWeatherRecord.GetTemperature());
-            weatherLogs[year][month].Insert(myWeatherRecord.GetSolarRadiation());
-
+          // Insert record using custom Map
+            if (!weatherLogs.has(year)) {
+                weatherLogs.add(year, Map<int, BinarySearchTree<float>>());
+            }
+            if (!weatherLogs.get(year).has(month)) {
+                weatherLogs.get(year).add(month, BinarySearchTree<float>());
+            }
+            weatherLogs.get(year).get(month).Insert(myWeatherRecord.GetSpeed());
+            weatherLogs.get(year).get(month).Insert(myWeatherRecord.GetTemperature());
+            weatherLogs.get(year).get(month).Insert(myWeatherRecord.GetSolarRadiation());
 
 
             totalCount++;
@@ -219,10 +228,10 @@ float WeatherLogType::calculateAverage(int avgType, int year, int month) const {
     staticTotalValue = 0.0;
     staticTotalNumOfData = 0;
 
-    if (weatherLogs.count(year) > 0) {
-        const MonthData& monthData = weatherLogs.at(year);
-        if (monthData.count(month) > 0) {
-            monthData.at(month).InorderTraversal(averageVisit);
+    if (weatherLogs.has(year)) {
+        const Map<int, BinarySearchTree<float>>& monthData = weatherLogs.get(year);
+        if (monthData.has(month)) {
+            monthData.get(month).InorderTraversal(averageVisit);
         }
     }
 
@@ -237,12 +246,10 @@ float WeatherLogType::calculateStandardDeviation(int stdDeviationType, int year,
     staticTotalNumOfData = 0;
     staticAvg = calculateAverage(stdDeviationType, year, month);
 
-    // Check if year exists using count()
-    if (weatherLogs.count(year) > 0) {
-        const MonthData& monthData = weatherLogs.at(year);
-        // Check if month exists using count()
-        if (monthData.count(month) > 0) {
-            monthData.at(month).InorderTraversal(stdDevVisit);
+    if (weatherLogs.has(year)) {
+        const Map<int, BinarySearchTree<float>>& monthData = weatherLogs.get(year);
+        if (monthData.has(month)) {
+            monthData.get(month).InorderTraversal(stdDevVisit);
         }
     }
 
@@ -252,16 +259,13 @@ float WeatherLogType::calculateStandardDeviation(int stdDeviationType, int year,
 
     return sqrt(staticSumSquaredDiff / (staticTotalNumOfData - 1));
 }
-
 float WeatherLogType::calculateTotalSolarRadiation(int year, int month) const {
     staticTotalSolarRadiationkWh = 0.0f;
 
-    // Check if year exists using count()
-    if (weatherLogs.count(year) > 0) {
-        const MonthData& monthData = weatherLogs.at(year);
-        // Check if month exists using count()
-        if (monthData.count(month) > 0) {
-            monthData.at(month).InorderTraversal(solarVisit);
+    if (weatherLogs.has(year)) {
+        const Map<int, BinarySearchTree<float>>& monthData = weatherLogs.get(year);
+        if (monthData.has(month)) {
+            monthData.get(month).InorderTraversal(solarVisit);
         }
     }
 
