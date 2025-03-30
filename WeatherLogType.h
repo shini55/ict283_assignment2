@@ -3,7 +3,7 @@
 #include "Vector.h"
 #include "WeatherRecType.h"
 #include <string>
-#include <map>
+#include "Map.h"
 #include "BinarySearchTree.h"
 
 /**
@@ -91,8 +91,8 @@ public:
 
 private:
     typedef BinarySearchTree<float> ValueTree; // BST of float values
-    typedef std::map<int, ValueTree> MonthData; // Map of month to BST
-    typedef std::map<int, MonthData> YearData; // Map of year to month data
+    typedef Map<int, ValueTree> MonthData; // Map of month to BST
+    typedef Map<int, MonthData> YearData; // Map of year to month data
     YearData weatherLogs;
 
     // Static data members for traversals
