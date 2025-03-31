@@ -222,65 +222,60 @@ void WeatherLogType::printAverageAndStdDevToScreen(int choice, int year, int mon
         }
     }
     else if (choice == 3)
-    {
-        std::cout << "";
-        for (int month = 1; month <= 12; ++month)
-        {
-            float totalSolarRadiation = stats.calculateTotalSolarRadiation(year, month, weatherData, weatherValues);
+   {
+        std::cout << "Sample Pearson Correlation Coefficient for " << monthName[month - 1] << std::endl;
 
-            if (totalSolarRadiation > 0)
-            {
-                std::cout << monthName[month - 1] << ":" << std::fixed << std::setprecision(2) << totalSolarRadiation << " kWh/m2" << std::endl;
-            }
-            else
-            {
-                std::cout << monthName[month - 1] << ": No Data" << std::endl;
-            }
-        }
+        float sT = stats.calculateSPCC(month, 0, weatherData);
+        float sR = stats.calculateSPCC(month, 1, weatherData);
+        float tR = stats.calculateSPCC(month, 2, weatherData);
+
+        std::cout << "S_T: " << std::fixed << std::setprecision(2) << sT << std::endl;
+        std::cout << "S_R: " << std::fixed << std::setprecision(2) << sR << std::endl;
+        std::cout << "T_R: " << std::fixed << std::setprecision(2) << tR << std::endl;
     }
 }
 
-void WeatherLogType::printAverageAndTotalToFile(int choice, int year, int month) const
-{
+
+void WeatherLogType::printAverageAndTotalToFile(int choice, int year, int month) const {
     const std::string monthName[] = {"January", "February", "March", "April", "May", "June",
-                                      "July", "August", "September", "October", "November", "December"};
+                                    "July", "August", "September", "October", "November", "December"};
 
     std::ofstream outFile("WindTempSolar.csv");
 
-    if (choice == 4)
-    {
+    if (choice == 4) {
         outFile << year << std::endl;
 
         bool hasDataForYear = false;
 
-        for (int month = 1; month <= 12; ++month)
-        {
-            float avgSpeed = stats.calculateAverage(0, year, month, weatherData, weatherValues);
-            float stdDevSpeed = stats.calculateStandardDeviation(0, year, month, weatherData, weatherValues);
-            float avgTemp = stats.calculateAverage(1, year, month, weatherData, weatherValues);
-            float stdDevTemp = stats.calculateStandardDeviation(1, year, month, weatherData, weatherValues);
-            float totalSolarRadiation = stats.calculateTotalSolarRadiation(year, month, weatherData, weatherValues);
+        for (int m = 1; m <= 12; ++m) {
+            float avgSpeed = stats.calculateAverage(0, year, m, weatherData, weatherValues);
+            float stdDevSpeed = stats.calculateStandardDeviation(0, year, m, weatherData, weatherValues);
+            float madSpeed = stats.calculateMAD(0, year, m, weatherData);
+            float avgTemp = stats.calculateAverage(1, year, m, weatherData, weatherValues);
+            float stdDevTemp = stats.calculateStandardDeviation(1, year, m, weatherData, weatherValues);
+            float madTemp = stats.calculateMAD(1, year, m, weatherData);
+            float totalSolarRadiation = stats.calculateTotalSolarRadiation(year, m, weatherData, weatherValues);
 
-            if (avgSpeed > 0 || avgTemp > 0 || totalSolarRadiation > 0)
-            {
+            if (avgSpeed > 0 || avgTemp > 0 || totalSolarRadiation > 0) {
                 hasDataForYear = true;
 
-                outFile << monthName[month - 1] << ",";
+                outFile << monthName[m - 1] << ",";
 
-                if (avgSpeed > 0)
-                {
-                    outFile << std::fixed << std::setprecision(2) << avgSpeed << "(" << stdDevSpeed << ")";
+                if (avgSpeed > 0) {
+                    outFile << std::fixed << std::setprecision(2) << avgSpeed << "("
+                            << std::fixed << std::setprecision(2) << stdDevSpeed << ","
+                            << std::fixed << std::setprecision(2) << madSpeed << ")";
                 }
                 outFile << ",";
 
-                if (avgTemp > 0)
-                {
-                    outFile << std::fixed << std::setprecision(2) << avgTemp << "(" << stdDevTemp << ")";
+                if (avgTemp > 0) {
+                    outFile << std::fixed << std::setprecision(2) << avgTemp << "("
+                            << std::fixed << std::setprecision(2) << stdDevTemp << ","
+                            << std::fixed << std::setprecision(2) << madTemp << ")";
                 }
                 outFile << ",";
 
-                if (totalSolarRadiation > 0)
-                {
+                if (totalSolarRadiation > 0) {
                     outFile << std::fixed << std::setprecision(2) << totalSolarRadiation;
                 }
 
@@ -288,8 +283,7 @@ void WeatherLogType::printAverageAndTotalToFile(int choice, int year, int month)
             }
         }
 
-        if (!hasDataForYear)
-        {
+        if (!hasDataForYear) {
             outFile << "No Data" << std::endl;
         }
     }
