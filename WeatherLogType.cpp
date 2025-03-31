@@ -6,12 +6,16 @@
 #include <string>
 #include <iomanip>
 
-// Initialize static members
-float WeatherLogType::staticTotalValue = 0.0;
-int WeatherLogType::staticTotalNumOfData = 0;
-float WeatherLogType::staticSumSquaredDiff = 0.0;
-float WeatherLogType::staticAvg = 0.0;
-float WeatherLogType::staticTotalSolarRadiationkWh = 0.0;
+// Add these definitions:
+float WeatherLogType::accumulatedSpeed = 0.0;
+float WeatherLogType::accumulatedTemp = 0.0;
+float WeatherLogType::accumulatedSolar = 0.0;
+int WeatherLogType::accumulatedCount = 0;
+float WeatherLogType::accumulatedSquaredSpeedDiff = 0.0;
+float WeatherLogType::accumulatedSquaredTempDiff = 0.0;
+float WeatherLogType::averageSpeed = 0.0;
+float WeatherLogType::averageTemp = 0.0;
+Vector<WeatherLogType::WeatherData> WeatherLogType::currentData;
 
 WeatherLogType::WeatherLogType()
 {
@@ -21,28 +25,10 @@ WeatherLogType::WeatherLogType()
 WeatherLogType::~WeatherLogType()
 {
 
-}
-// Static helper functions for traversals
-void WeatherLogType::averageVisit(float& value)
-{
-    staticTotalValue += value;
-    staticTotalNumOfData++;
+
 }
 
-void WeatherLogType::stdDevVisit(float& value)
-{
-    float diff = value - staticAvg;
-    staticSumSquaredDiff += diff * diff;
-    staticTotalNumOfData++;
-}
 
-void WeatherLogType::solarVisit(float& value)
-{
-    if (value >= 100.0f)
-    {
-        staticTotalSolarRadiationkWh += (value * (1.0f / 6.0f)) / 1000.0f;
-    }
-}
 Vector<std::string> WeatherLogType::GetInputFileNames()
 {
     std::string txtFile = "data/data_source.txt";
@@ -196,16 +182,19 @@ int WeatherLogType::LoadRecords(const std::string &filename)
             myWeatherRecord.SetDate(Date(day, month, year));
             myWeatherRecord.SetTime(Time(hour, minute, 0));
 
-          // Insert record using custom Map
-            if (!weatherLogs.has(year)) {
-                weatherLogs.add(year, Map<int, BinarySearchTree<float>>());
+            if (!weatherValues.has(year))
+            {
+                weatherValues.add(year, Map<int, BinarySearchTree<int>>());
+                weatherData.add(year, Map<int, Vector<WeatherData>>());
             }
-            if (!weatherLogs.get(year).has(month)) {
-                weatherLogs.get(year).add(month, BinarySearchTree<float>());
+            if (!weatherValues.get(year).has(month))
+            {
+                weatherValues.get(year).add(month, BinarySearchTree<int>());
+                weatherData.get(year).add(month, Vector<WeatherData>());
             }
-            weatherLogs.get(year).get(month).Insert(myWeatherRecord.GetSpeed());
-            weatherLogs.get(year).get(month).Insert(myWeatherRecord.GetTemperature());
-            weatherLogs.get(year).get(month).Insert(myWeatherRecord.GetSolarRadiation());
+            weatherValues.get(year).get(month).Insert(weatherData.get(year).get(month).GetSize());
+            weatherData.get(year).get(month).Insert({windSpeed, temperature, solarRadiation, Date(day, month, year), Time(hour, minute, 0)}, weatherData.get(year).get(month).GetSize());
+
 
 
             totalCount++;
@@ -223,54 +212,52 @@ int WeatherLogType::LoadRecords(const std::string &filename)
 
     return totalCount;
 }
-
-float WeatherLogType::calculateAverage(int avgType, int year, int month) const {
-    staticTotalValue = 0.0;
-    staticTotalNumOfData = 0;
-
-    if (weatherLogs.has(year)) {
-        const Map<int, BinarySearchTree<float>>& monthData = weatherLogs.get(year);
-        if (monthData.has(month)) {
-            monthData.get(month).InorderTraversal(averageVisit);
-        }
-    }
-
-    if (staticTotalNumOfData == 0) {
-        return 0.0;
-    }
-
-    return staticTotalValue / staticTotalNumOfData;
+void WeatherLogType::accumulateData(int& index)
+{
+    WeatherData data = currentData[index];
+    accumulatedSpeed += data.speed;
+    accumulatedTemp += data.temperature;
+    accumulatedSolar += data.solarRadiation;
+    accumulatedCount++;
+    accumulatedSquaredSpeedDiff += (data.speed - averageSpeed) * (data.speed - averageSpeed);
+    accumulatedSquaredTempDiff += (data.temperature - averageTemp) * (data.temperature - averageTemp);
 }
-float WeatherLogType::calculateStandardDeviation(int stdDeviationType, int year, int month) const {
-    staticSumSquaredDiff = 0.0;
-    staticTotalNumOfData = 0;
-    staticAvg = calculateAverage(stdDeviationType, year, month);
 
-    if (weatherLogs.has(year)) {
-        const Map<int, BinarySearchTree<float>>& monthData = weatherLogs.get(year);
-        if (monthData.has(month)) {
-            monthData.get(month).InorderTraversal(stdDevVisit);
-        }
-    }
-
-    if (staticTotalNumOfData <= 1) {
-        return 0.0;
-    }
-
-    return sqrt(staticSumSquaredDiff / (staticTotalNumOfData - 1));
+float WeatherLogType::calculateAverage(int avgType, int year, int month) const
+{
+    if (!weatherData.has(year) || !weatherData.get(year).has(month)) return 0.0f;
+    accumulatedSpeed = accumulatedTemp = accumulatedSolar = accumulatedCount = 0;
+    currentData = weatherData.get(year).get(month);
+    weatherValues.get(year).get(month).InorderTraversal(accumulateData);
+    if (accumulatedCount == 0) return 0.0f;
+    if (avgType == 0) return (accumulatedSpeed / accumulatedCount) * 3.6f;
+    else if (avgType == 1) return accumulatedTemp / accumulatedCount;
+    else return accumulatedSolar / accumulatedCount;
 }
-float WeatherLogType::calculateTotalSolarRadiation(int year, int month) const {
-    staticTotalSolarRadiationkWh = 0.0f;
 
-    if (weatherLogs.has(year)) {
-        const Map<int, BinarySearchTree<float>>& monthData = weatherLogs.get(year);
-        if (monthData.has(month)) {
-            monthData.get(month).InorderTraversal(solarVisit);
-        }
-    }
-
-    return staticTotalSolarRadiationkWh;
+float WeatherLogType::calculateStandardDeviation(int stdDeviationType, int year, int month) const
+{
+    if (!weatherData.has(year) || !weatherData.get(year).has(month)) return 0.0f;
+    averageSpeed = calculateAverage(0, year, month);
+    averageTemp = calculateAverage(1, year, month);
+    accumulatedSquaredSpeedDiff = accumulatedSquaredTempDiff = accumulatedCount = 0;
+    currentData = weatherData.get(year).get(month);
+    weatherValues.get(year).get(month).InorderTraversal(accumulateData);
+    if (accumulatedCount <= 1) return 0.0f;
+    if (stdDeviationType == 0) return sqrt(accumulatedSquaredSpeedDiff / (accumulatedCount - 1));
+    else return sqrt(accumulatedSquaredTempDiff / (accumulatedCount - 1));
 }
+
+float WeatherLogType::calculateTotalSolarRadiation(int year, int month) const
+{
+    if (!weatherData.has(year) || !weatherData.get(year).has(month)) return 0.0f;
+    accumulatedSolar = accumulatedCount = 0;
+    currentData = weatherData.get(year).get(month);
+    weatherValues.get(year).get(month).InorderTraversal(accumulateData);
+    return accumulatedSolar;
+}
+
+
 void WeatherLogType::printAverageAndStdDevToScreen(int choice, int year, int month) const
 {
     const std::string monthName[] = {"January", "February", "March", "April", "May", "June",
