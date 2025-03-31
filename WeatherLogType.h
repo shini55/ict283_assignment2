@@ -11,6 +11,7 @@
  * @brief A class to manage weather records, perform calculations, and output data.
  */
 
+
 class WeatherLogType
 {
 public:
@@ -85,27 +86,40 @@ public:
     * @param outputFilename The name of the output file.
     */
     void printLoadedDataToFile(const std::string &outputFilename) const;
-
+    static Vector<float> staticTraversalValues; // Static vector
 
 
 
 private:
-    typedef BinarySearchTree<float> ValueTree; // BST of float values
-    typedef Map<int, ValueTree> MonthData; // Map of month to BST
-    typedef Map<int, MonthData> YearData; // Map of year to month data
-    YearData weatherLogs;
 
-    // Static data members for traversals
-    static float staticTotalValue;
-    static int staticTotalNumOfData;
-    static float staticSumSquaredDiff;
-    static float staticAvg;
-    static float staticTotalSolarRadiationkWh;
+    struct WeatherData
+{
+    float speed;
+    float temperature;
+    float solarRadiation;
+    Date date;
+    Time time;
+};
 
-    // Static helper functions for traversals
-    static void averageVisit(float& value);
-    static void stdDevVisit(float& value);
-    static void solarVisit(float& value);
+    typedef BinarySearchTree<int> ValueTree;
+    typedef Map<int, ValueTree> MonthValues;
+    typedef Map<int, Map<int, Vector<WeatherData>>> MonthData;
+    typedef Map<int, MonthValues> YearValues;
+    YearValues weatherValues;
+    MonthData weatherData;
+
+    static void accumulateData(int& index);
+    static float accumulatedSpeed;
+    static float accumulatedTemp;
+    static float accumulatedSolar;
+    static int accumulatedCount;
+    static float accumulatedSquaredSpeedDiff;
+    static float accumulatedSquaredTempDiff;
+    static float averageSpeed;
+    static float averageTemp;
+    static int currentIndex;
+    static Vector<WeatherData> currentData;
+
 };
 
 #endif // WEATHERLOGTYPE_H_INCLUDED
