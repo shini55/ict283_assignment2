@@ -5,6 +5,8 @@
 #include <string>
 #include "Map.h"
 #include "BinarySearchTree.h"
+#include "Statistics.h"
+#include "WeatherRecType.h" // Include WeatherRecType.h
 
 /**
  * @class WeatherLogType
@@ -39,31 +41,7 @@ public:
     */
     int LoadRecords(const std::string &filename);
 
-    /**
-    * @brief Calculates the average of a specific weather parameter for a given month and year.
-    * @param avgType The type of weather parameter (e.g., wind speed, temperature, or solar radiation).
-    * @param month The month for which the average is calculated.
-    * @param year The year for which the average is calculated.
-    * @return The calculated average as a float.
-    */
-    float calculateAverage(int avgType,int month, int year) const;
 
-    /**
-    * @brief Calculates the standard deviation of a specific weather parameter for a given month and year.
-    * @param stdDeviationType The type of weather parameter (e.g., wind speed, temperature, or solar radiation).
-    * @param month The month for which the standard deviation is calculated.
-    * @param year The year for which the standard deviation is calculated.
-    * @return The calculated standard deviation as a float.
-    */
-    float calculateStandardDeviation(int stdDeviationType,int month, int year) const;
-
-    /**
-     * @brief Calculates the total solar radiation for a given month and year.
-     * @param year The year for which the total solar radiation is calculated.
-     * @param month The month for which the total solar radiation is calculated.
-     * @return The total solar radiation as a float.
-     */
-    float calculateTotalSolarRadiation(int year, int month) const;
 
     /**
     * @brief Prints the calculated average and standard deviation to the screen.
@@ -86,39 +64,23 @@ public:
     * @param outputFilename The name of the output file.
     */
     void printLoadedDataToFile(const std::string &outputFilename) const;
-    static Vector<float> staticTraversalValues; // Static vector
+
 
 
 
 private:
 
-    struct WeatherData
-{
-    float speed;
-    float temperature;
-    float solarRadiation;
-    Date date;
-    Time time;
-};
 
     typedef BinarySearchTree<int> ValueTree;
     typedef Map<int, ValueTree> MonthValues;
-    typedef Map<int, Map<int, Vector<WeatherData>>> MonthData;
+    typedef Map<int, Map<int, Vector<WeatherRecType>>> MonthData;
     typedef Map<int, MonthValues> YearValues;
     YearValues weatherValues;
     MonthData weatherData;
 
-    static void accumulateData(int& index);
-    static float accumulatedSpeed;
-    static float accumulatedTemp;
-    static float accumulatedSolar;
-    static int accumulatedCount;
-    static float accumulatedSquaredSpeedDiff;
-    static float accumulatedSquaredTempDiff;
-    static float averageSpeed;
-    static float averageTemp;
-    static int currentIndex;
-    static Vector<WeatherData> currentData;
+
+    Statistics stats; // Add Statistics object
+
 
 };
 
