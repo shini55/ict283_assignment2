@@ -3,6 +3,16 @@
 #include <map>
 using std::map;
 
+
+/**
+ * @brief A simple map-like class to store key and the value.
+ *
+ * This class allows to store data in the form of key and the value
+ *
+ * @tparam Key The type of the key.
+ * @tparam Value The type of the value associated with the key.
+ */
+
 template <class Key, class Value>
 class Map
 {
@@ -10,72 +20,107 @@ class Map
 public:
 
 
-    // Constructor
+    /**
+     * @brief Creates an empty map.
+     *
+     * Initializes the map to be empty and ready to store key and the value
+     */
     Map();
 
-    // Destructor
+    /**
+     * @brief Destroys the map.
+     *
+     * Cleans up resources used by the map when it is no longer needed.
+     */
     ~Map();
 
-    // Function 1: Add a key-value pair (renamed from insert)
+
+    /**
+     * @brief Adds a new key and the value to the map.
+     *
+     * This function stores the key and the value in the map. If the key already exists,
+     * it updates the value.
+     *
+     * @param key The key to store.
+     * @param value The value to the key.
+     */
     void add(const Key& key, const Value& value);
 
-    // Function 2: Check if a key exists
+    /**
+     * @brief Checks if the map contains a specific key.
+     *
+     * This function returns true if the key is already in the map, otherwise false.
+     *
+     * @param key The key to look for.
+     * @return true if the key is found, false if not.
+     */
     bool has(const Key& key) const;
 
-    // Function 3: Get the value associated with a key
+   /**
+     * @brief Retrieves the value associated with a given key.
+     *
+     * This function gives access to the value
+     *
+     * @param key The key whose value to be retrieve.
+     * @return A reference to the value of the key.
+     */
     Value& get(const Key& key);
+
+
+
+      /**
+     * @brief Retrieves the value for  a key for reading
+     *
+     * This function helps access the value of a key without modifying it.
+     *
+     * @param key The key whose value to be retrieve.
+     * @return A constant reference to the value of the key.
+     */
     const Value& get(const Key& key) const;
 
 
 
-    // Function 4: Get the number of elements
-    size_t Count() const;
 
 private:
 
-    std::map<Key, Value> data;
+    std::map<Key, Value> data; ///Stores the key and the value
 
 };
-// Constructor
+
 template <class Key, class Value>
 Map<Key, Value>::Map() {}
 
-// Destructor
+
 template <class Key, class Value>
 Map<Key, Value>::~Map() {}
 
-// Add a key-value pair (renamed from insert)
+
 template <class Key, class Value>
 void Map<Key, Value>::add(const Key& key, const Value& value)
 {
-    data[key] = value;
+    data[key] = value;// Add a key and the value
 }
 
-// Check if a key exists (renamed from contains)
+
 template <class Key, class Value>
 bool Map<Key, Value>::has(const Key& key) const
 {
-    return data.find(key) != data.end();
+    return data.find(key) != data.end();// Check if a key exists
 }
 
-// Get the value associated with a key
+
 template <class Key, class Value>
 Value& Map<Key, Value>::get(const Key& key)
 {
-    return data.at(key);
+    return data.at(key);// Get the value associated with a key for modifying
 }
 
-// Get the value associated with a key (const version)
+
 template <class Key, class Value>
 const Value& Map<Key, Value>::get(const Key& key) const
 {
-    return data.at(key);
+    return data.at(key);// Get the value associated with a key for reading
 }
-// Get the number of elements
-template <class Key, class Value>
-size_t Map<Key, Value>::Count() const
-{
-    return data.size();
-}
+
 
 #endif // MAP_H_INCLUDED
