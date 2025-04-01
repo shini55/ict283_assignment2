@@ -41,7 +41,13 @@ public:
     */
     int LoadRecords(const std::string &filename);
 
-    // Add this public getter method
+    /**
+     * @brief Retrieves the stored weather data.
+     *
+     * This function returns the weather data organized by year, month, and a list of weather records.
+     *
+     * @return A reference to the weather data map.
+     */
     const Map<int, Map<int, Vector<WeatherRecType>>>& GetWeatherData() const;
 
 
@@ -49,12 +55,12 @@ public:
 private:
 
 
-    typedef BinarySearchTree<int> ValueTree;
-    typedef Map<int, ValueTree> MonthValues;
-    typedef Map<int, Map<int, Vector<WeatherRecType>>> MonthData;
-    typedef Map<int, MonthValues> YearValues;
-    YearValues weatherValues;
-    MonthData weatherData;
+    typedef BinarySearchTree<int> ValueTree; /// A binary search tree storing weather values.
+    typedef Map<int, ValueTree> MonthValues; /// A map storing weather values for each month.
+    typedef Map<int, Map<int, Vector<WeatherRecType>>> MonthData;  /// A nested map storing weather records, organized by year and month.
+    typedef Map<int, MonthValues> YearValues;/// A map that stores values for each year, with months as keys.
+    YearValues weatherValues; /// Stores the weather values, organized by year and month.
+    MonthData weatherData; /// Stores detailed weather data, organized by year and month.
 
 
 
