@@ -2,24 +2,27 @@
 #include <iostream>
 #include <fstream>
 #include "WeatherLogType.h"
+#include "WeatherPrinter.h"
 
 
 int main()
 {
     // 0. Data Store
-    WeatherLogType weatherRecords;
-
+    WeatherLogType weatherLog;
 
 
     //1. Input/Load
     std::string csvFileName;
-    int recordsLoaded = weatherRecords.LoadRecords(csvFileName);
+    int recordsLoaded = weatherLog.LoadRecords(csvFileName);
 
     if (recordsLoaded < 0)
     {
         std::cout << "Error loading records. Exiting program." << std::endl;
         return 1;
     }
+
+    // Initialize printer with weather data
+    WeatherPrinter printer(weatherLog);
 
     std::cout << "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * " << std::endl;
     std::cout << "*               WeatherLogType Collection               * " << std::endl;
@@ -41,7 +44,7 @@ int main()
         std::cout << ""<< std::endl;
         std::cout << "1: Display Average wind speed and sample standard deviation" << std::endl;
         std::cout << "2: Display Average ambient air temperature and sample standard deviation" << std::endl;
-        std::cout << "3: Display Total solar radiation in kWh/m2" << std::endl;
+        std::cout << "3: Sample Pearson Correlation Coefficient (SPCC) " << std::endl;
         std::cout << "4: Output Average wind speed (km/h),average ambient air temperature and total solar radiation in kWh/m2" << std::endl;
         std::cout << "5: Exit Program" << std::endl;
         std::cout << " " << std::endl;
@@ -60,7 +63,7 @@ int main()
             std::cout << "Enter year: ";
             std::cin >> year;
             std::cout << ""<< std::endl;
-            weatherRecords.printAverageAndStdDevToScreen(choice, year, month);
+            printer.printToScreen(weatherLog, choice, year, month);
             break;
         }
         case 2:
@@ -69,16 +72,16 @@ int main()
             std::cout << "Enter year: ";
             std::cin >> year;
             std::cout << ""<< std::endl;
-            weatherRecords.printAverageAndStdDevToScreen(choice, year, 0);
+            printer.printToScreen(weatherLog, choice, year, 1);
             break;
         }
         case 3:
         {
             std::cout << ""<< std::endl;
-            std::cout << "Enter year: ";
-            std::cin >> year;
+            std::cout << "Enter month: ";
+            std::cin >> month;
             std::cout << ""<< std::endl;
-            weatherRecords.printAverageAndStdDevToScreen(choice, year, 0);
+            printer.printToScreen(weatherLog, choice, year, month);
             break;
         }
         case 4:
@@ -86,7 +89,7 @@ int main()
             std::cout << "" << std::endl;
             std::cout << "Enter year: ";
             std::cin >> year;
-            weatherRecords.printAverageAndTotalToFile(choice, year, 0);
+            printer.printToFile(weatherLog, choice, year, 1);
             std::cout << "--------------------------------------------------------" << std::endl;
             std::cout << "Your Requested data is outputted to WindTempSolar.csv!" << std::endl;
             std::cout << "--------------------------------------------------------"  << std::endl;
