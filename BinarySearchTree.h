@@ -20,7 +20,7 @@ struct Node
  *
  * This class provides methods to insert, search, delete, and traverse nodes in the tree.
  *
- * @tparam T The type of data stored in the tree nodes.
+ * @param T The type of data stored in the tree nodes.
  */
 
 template <class T>
@@ -35,11 +35,11 @@ public:
      */
     BinarySearchTree();
 
-      /**
-     * @brief Destructor for BinarySearchTree.
-     *
-     * Deallocates all nodes in the tree.
-     */
+    /**
+    * @brief Destructor for BinarySearchTree.
+    *
+    * Deallocates all nodes in the tree.
+    */
     ~BinarySearchTree();
 
     /**
@@ -51,21 +51,21 @@ public:
      */
     BinarySearchTree(const BinarySearchTree& otherTree);
 
-      /**
-     * @brief Assignment operator for BinarySearchTree.
-     *
-     * Copies the contents of the given binary search tree into the current tree.
-     *
-     * @param otherTree The binary search tree to copy.
-     * @return A reference to the current tree.
-     */
+    /**
+    * @brief Assignment operator for BinarySearchTree.
+    *
+    * Copies the contents of the given binary search tree into the current tree.
+    *
+    * @param otherTree The binary search tree to copy.
+    * @return A reference to the current tree.
+    */
     BinarySearchTree& operator=(const BinarySearchTree& otherTree);
 
-     /**
-     * @brief Inserts a new item into the binary search tree.
-     *
-     * @param item The item to insert.
-     */
+    /**
+    * @brief Inserts a new item into the binary search tree.
+    *
+    * @param item The item to insert.
+    */
 
     void Insert(const T& item);
 
@@ -77,27 +77,27 @@ public:
      */
     bool Search(const T& target) const;
 
-      /**
-     * @brief Deletes a node with the specified target from the tree.
-     *
-     * @param target The item to delete.
-     */
+    /**
+    * @brief Deletes a node with the specified target from the tree.
+    *
+    * @param target The item to delete.
+    */
     void DeleteNode(const T& target);
 
-       /**
-     * @brief Deletes all nodes in the tree.
-     *
-     * This method is called to remove all nodes in the tree.
-     */
+    /**
+    * @brief Deletes all nodes in the tree.
+    *
+    * This method is called to remove all nodes in the tree.
+    */
 
     void DeleteTree(); // Public method
 
 
-     /**
-     * @brief Performs an inorder traversal of the tree.
-     *
-     * @param visit A pointer to a function that processes each node's data.
-     */
+    /**
+    * @brief Performs an inorder traversal of the tree.
+    *
+    * @param visit A pointer to a function that processes each node's data.
+    */
 
     // Traversal methods
     void InorderTraversal(void (*visit)(T&)) const;
@@ -111,80 +111,80 @@ public:
     void PreorderTraversal(void (*visit)(T&)) const;
 
 
-     /**
-     * @brief Performs a postorder traversal of the tree.
-     *
-     * @param visit A pointer to a function that processes each node's data.
-     */
+    /**
+    * @brief Performs a postorder traversal of the tree.
+    *
+    * @param visit A pointer to a function that processes each node's data.
+    */
     void PostorderTraversal(void (*visit)(T&)) const;
 
 private:
     Node<T> *m_root;/**< Pointer to the root node of the tree */
 
 
-      /**
-     * @brief Helper method for performing inorder traversal.
-     *
-     * @param current The current node to process.
-     * @param visit A pointer to a function that processes each node's data.
-     */
+    /**
+    * @brief Helper method for performing inorder traversal.
+    *
+    * @param current The current node to process.
+    * @param visit A pointer to a function that processes each node's data.
+    */
     void Inorder(Node<T>* current, void (*visit)(T&)) const;
 
-     /**
-     * @brief Helper method for performing preorder traversal.
-     *
-     * @param current The current node to process.
-     * @param visit A pointer to a function that processes each node's data.
-     */
+    /**
+    * @brief Helper method for performing preorder traversal.
+    *
+    * @param current The current node to process.
+    * @param visit A pointer to a function that processes each node's data.
+    */
     void Preorder(Node<T>* current, void (*visit)(T&)) const;
 
-     /**
-     * @brief Helper method for performing postorder traversal.
-     *
-     * @param current The current node to process.
-     * @param visit A pointer to a function that processes each node's data.
-     */
+    /**
+    * @brief Helper method for performing postorder traversal.
+    *
+    * @param current The current node to process.
+    * @param visit A pointer to a function that processes each node's data.
+    */
     void Postorder(Node<T>* current, void (*visit)(T&)) const;
 
-     /**
-     * @brief Helper method for inserting a new node into the tree.
-     *
-     * @param newNode The node to insert.
-     * @param current The current node to compare against.
-     */
+    /**
+    * @brief Helper method for inserting a new node into the tree.
+    *
+    * @param newNode The node to insert.
+    * @param current The current node to compare against.
+    */
 
     void Insert(Node<T>* newNode, Node<T>*& current);
 
-     /**
-     * @brief Helper method for searching for a target item in the tree.
-     *
-     * @param current The current node to compare against.
-     * @param target The target item to search for.
-     * @return true if the target is found, false otherwise.
-     */
+    /**
+    * @brief Helper method for searching for a target item in the tree.
+    *
+    * @param current The current node to compare against.
+    * @param target The target item to search for.
+    * @return true if the target is found, false otherwise.
+    */
     bool Search(Node<T>* current, const T& target) const;
 
-     /**
-     * @brief Helper method for deleting a node from the tree.
-     *
-     * @param current The current node to check.
-     * @param target The item to delete.
-     */
+    /**
+    * @brief Helper method for deleting a node from the tree.
+    *
+    * @param current The current node to check.
+    * @param target The item to delete.
+    */
     void DeleteFromTree(Node<T>*& current,const T& target);
 
-     /**
-     * @brief Helper method for destroying the entire tree.
-     *
-     * @param current The current node to delete.
-     */
+    /**
+    * @brief Helper method for destroying the entire tree.
+    *
+    * @param current The current node to delete.
+    */
     void Destroy(Node<T>*& current);
 
-     /**
-     * @brief Helper method for copying a tree.
-     *
-     * @param current The current node to copy.
-     * @return A pointer to the newly created tree.
-     */
+    /**
+    * @brief Helper method for copying a tree.
+    *
+    * @param current The current node to copy.
+    * @return A pointer to the newly created tree.
+    */
     Node<T>* CopyTree(Node<T>* current) const;
 
 
@@ -311,51 +311,67 @@ void BinarySearchTree<T>::DeleteFromTree(Node<T>*& current, const T& target)
     Node<T>* trailCurrent = nullptr;
     Node<T>* temp = nullptr;
 
-    if (current == nullptr) {
+    if (current == nullptr)
+    {
         return;
     }
 
-    if (target < current->m_info) {
+    if (target < current->m_info)
+    {
         DeleteFromTree(current->m_left, target);
-    } else if (target > current->m_info) {
+    }
+    else if (target > current->m_info)
+    {
         DeleteFromTree(current->m_right, target);
-    } else {
+    }
+    else
+    {
         // Node to be deleted found
 
-        if (current->m_left == nullptr && current->m_right == nullptr) {
-            // Case 1: No children
+        if (current->m_left == nullptr && current->m_right == nullptr)
+        {
+            // When No children
             temp = current;
             current = nullptr;
             delete temp;
-        } else if (current->m_left == nullptr) {
-            // Case 2: One child (right)
+        }
+        else if (current->m_left == nullptr)
+        {
+            // When One child in the right
             temp = current;
             current = current->m_right;
             delete temp;
-        } else if (current->m_right == nullptr) {
-            // Case 3: One child (left)
+        }
+        else if (current->m_right == nullptr)
+        {
+            // When One child in the left
             temp = current;
             current = current->m_left;
             delete temp;
-        } else {
-            // Case 4: Two children
-            // Find the maximum node in the left subtree (inorder predecessor)
-            Node<T>* currentMaxLeft = current->m_left;
+        }
+        else
+        {
+
+            Node<T>* currentMaxLeft = current->m_left;// Find the maximum node in the left subtree
             trailCurrent = nullptr;
 
-            while (currentMaxLeft->m_right != nullptr) {
+            while (currentMaxLeft->m_right != nullptr)
+            {
                 trailCurrent = currentMaxLeft;
                 currentMaxLeft = currentMaxLeft->m_right;
             }
 
-            // Copy the max-left value into the node to be "deleted"
-            current->m_info = currentMaxLeft->m_info;
 
-            // Adjust pointers to remove the duplicate node
-            if (trailCurrent == nullptr) {
-                // If currentMaxLeft is directly current->m_left
-                current->m_left = currentMaxLeft->m_left;
-            } else {
+            current->m_info = currentMaxLeft->m_info; // Copy the max-left value into the node to be deleted
+
+
+            if (trailCurrent == nullptr)// Adjust pointers to remove the duplicate node
+            {
+
+                current->m_left = currentMaxLeft->m_left;// If currentMaxLeft is directly current->m_left
+            }
+            else
+            {
                 trailCurrent->m_right = currentMaxLeft->m_left;
             }
 
@@ -364,71 +380,85 @@ void BinarySearchTree<T>::DeleteFromTree(Node<T>*& current, const T& target)
     }
 }
 
-// Public DeleteTree Method
 template <class T>
 void BinarySearchTree<T>::DeleteTree()
 {
-    Destroy(m_root);
+
+    Destroy(m_root);// Calls the Destroy function to delete all nodes in the tree
     m_root = nullptr;
 }
 
-// Private Destroy Method (Renamed from DeleteTree)
+
 template <class T>
 void BinarySearchTree<T>::Destroy(Node<T>*& current)
 {
+    // If the current node is not empty
     if (current != nullptr)
     {
+        // Recursively delete the left subtree
         Destroy(current->m_left);
+        // Recursively delete the right subtree
         Destroy(current->m_right);
         delete current;
         current = nullptr;
     }
 }
 
-// CopyTree Method
+
 template <class T>
 Node<T>* BinarySearchTree<T>::CopyTree(Node<T>* current) const
 {
+
     if (current == nullptr)
     {
         return nullptr;
     }
     else
     {
+        // Create a new node and copy the data from the current node
         Node<T>* newNode = new Node<T>;
         newNode->m_info = current->m_info;
+
+        // Recursively copy the left and right subtrees
         newNode->m_left = CopyTree(current->m_left);
         newNode->m_right = CopyTree(current->m_right);
+
         return newNode;
     }
-
 }
 
 template <class T>
 void BinarySearchTree<T>::InorderTraversal(void (*visit)(T&)) const
 {
+
     Inorder(m_root, *visit);
 }
 
 template <class T>
 void BinarySearchTree<T>::PreorderTraversal(void (*visit)(T&)) const
 {
+
     Preorder(m_root, *visit);
 }
 
 template <class T>
 void BinarySearchTree<T>::PostorderTraversal(void (*visit)(T&)) const
 {
+
     Postorder(m_root, *visit);
 }
 
 template <class T>
 void BinarySearchTree<T>::Inorder(Node<T>* current, void (*visit)(T&)) const
 {
+    // If the current node is not null
     if (current != nullptr)
     {
+        // First, visit the left subtree
         Inorder(current->m_left, *visit);
+        // Then, visit the current node
         visit(current->m_info);
+        // Finally, visit the right subtree
         Inorder(current->m_right, *visit);
     }
 }
@@ -436,10 +466,14 @@ void BinarySearchTree<T>::Inorder(Node<T>* current, void (*visit)(T&)) const
 template <class T>
 void BinarySearchTree<T>::Preorder(Node<T>* current, void (*visit)(T&)) const
 {
+    // If the current node is not null
     if (current != nullptr)
     {
+        // Visit the current node first
         visit(current->m_info);
+        // Then visit the left subtree
         Preorder(current->m_left, *visit);
+        // Finally, visit the right subtree
         Preorder(current->m_right, *visit);
     }
 }
@@ -447,13 +481,16 @@ void BinarySearchTree<T>::Preorder(Node<T>* current, void (*visit)(T&)) const
 template <class T>
 void BinarySearchTree<T>::Postorder(Node<T>* current, void (*visit)(T&)) const
 {
+    // If the current node is not null
     if (current != nullptr)
     {
+        // First, visit the left subtree
         Postorder(current->m_left, *visit);
+        // Then, visit the right subtree
         Postorder(current->m_right, *visit);
+        // Finally, visit the current node
         visit(current->m_info);
     }
 }
-
 
 #endif // BINARYSEARCHTREE_H_INCLUDED
